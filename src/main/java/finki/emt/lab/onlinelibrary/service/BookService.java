@@ -32,7 +32,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    private Book createNewBook(BookRequest request) {
+    public Book createNewBook(BookRequest request) {
         Optional<Author> optionalAuthor = authorService.findByNameAndSurname(request.author.name, request.author.surname);
         Author author;
         if(optionalAuthor.isEmpty()){
@@ -46,11 +46,37 @@ public class BookService {
         return save(book);
     }
 
+    public Book editBook(Long id, BookRequest request) {
+        Book book = findById(id);
+
+        Optional<Author> optionalAuthor = authorService.findByNameAndSurname(request.author.name, request.author.surname);
+        Author author;
+        if(optionalAuthor.isEmpty()){
+            author = authorService.save(new Author(request.author.name, request.author.surname));
+        }
+        else {
+            author = optionalAuthor.get();
+        }
+        return save(book);
+    }
+
+    public Book borrowBook(Long id) {
+        Book book = findById(id);
+        if (book.getAvailableCopies() > 0) {
+            book.setAvailableCopies(book.getAvailableCopies()-1);
+        }
+        else
+            throw new RuntimeException("No available copies");
+        return book;
+    }
+
+
     private Book save(Book book) {
         return bookRepository.save(book);
     }
 
-    public void delete(Book book) {
+    public void delete(Long id) {
+        Book book = findById(id);
         bookRepository.delete(book);
     }
 
