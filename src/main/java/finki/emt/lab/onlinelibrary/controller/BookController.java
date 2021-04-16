@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/game")
-@CrossOrigin("http://localhost:4200/")
+@RequestMapping(value = "/api/book")
+@CrossOrigin("http://localhost:3000/")
 public class BookController {
 
     private final BookService bookService;
@@ -40,13 +40,18 @@ public class BookController {
         return bookService.createNewBook(request);
     }
 
-    @PutMapping("{id}/edit")
+    @PutMapping("/{id}/edit")
     public Book editBook(@PathVariable Long id, @RequestBody BookRequest request) {
         return bookService.editBook(id, request);
     }
 
-    @DeleteMapping("{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public void deleteBook(@PathVariable Long id) {
         bookService.delete(id);
+    }
+
+    @PutMapping("/{id}/borrow")
+    public Book borrowBook(@PathVariable Long id) {
+        return bookService.borrowBook(id);
     }
 }
